@@ -1,4 +1,5 @@
 .svd_truncated <- function(mat, K, symmetric, rescale,
+                           mean_vec = NULL, sd_vec = NULL,
                            K_full_rank){
   if(is.na(K)) K <- min(dim(mat))
   stopifnot(min(dim(mat)) >= K)
@@ -8,14 +9,18 @@
     res <- tryCatch({
       # ask for more singular values than needed to ensure stability
       if(symmetric){
-        tmp <- irlba::partial_eigen(mat, n = ifelse(K_full_rank, K, K+2))
+        tmp <- irlba::partial_eigen(mat, n = ifelse(K_full_rank, K, K+2),
+                                    center = mean_vec, scale = sd_vec)
         list(u = tmp$vectors, d = tmp$values, v = tmp$vectors)
       } else {
-        irlba::irlba(mat, nv = ifelse(K_full_rank, K, K+2))
+        irlba::irlba(mat, nv = ifelse(K_full_rank, K, K+2),
+                     center = mean_vec, scale = sd_vec)
       }
     }, warning = function(e){
+      if(!all(is.null(mean_vec)) | !all(is.null(sd_vec))) print("mean_vec or sd_vec not used")
       RSpectra::svds(mat, k = ifelse(K_full_rank, K, K+2))
     }, error = function(e){
+      if(!all(is.null(mean_vec)) | !all(is.null(sd_vec))) print("mean_vec or sd_vec not used")
       RSpectra::svds(mat, k = ifelse(K_full_rank, K, K+2))
     })
   } else {

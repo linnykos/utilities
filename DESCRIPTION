@@ -4,14 +4,17 @@ Version: 0.0.0.0002
 Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
 Description: A package to house useful functions that are tested and maintained.
 Depends:
-    R (>= 3.3.0)
+    R (>= 3.3.0),
+    data.table
 License: MIT +file LICENSE
 Encoding: UTF-8
 LazyData: true
 Imports:
     MASS,
     RSpectra,
-    irlba
+    irlba,
+    sparseMatrixStats,
+    matrixStats
 Suggests:
     testthat
 RoxygenNote: 6.1.1
